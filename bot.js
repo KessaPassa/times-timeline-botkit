@@ -230,7 +230,7 @@ let getChannelName = function (channel_id, callback) {
 
         callback('#' + JSON.parse(body).channel.name);
     });
-}
+};
 
 //乗っ取り形式
 function sendTaleover(user, text, permalink, channel_name) {
@@ -314,6 +314,7 @@ controller.hears(['(.*)'], 'ambient', function (bot, message) {
 });
 
 controller.on(['file_shared'], function (bot, message) {
+
     console.log(message);
     webclient.get({
         url: "https://slack.com/api/files.sharedPublicURL",
