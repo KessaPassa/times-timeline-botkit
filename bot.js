@@ -198,7 +198,7 @@ controller.hears(['remove (.*)'], 'direct_message,direct_mention,mention', funct
 /*
 timeline処理
 */
-const timeline_id = 'C9EA1U46Q';
+const timeline_id = process.env.timeline_id;
 const timeline_name = 'times_timeline';
 
 
