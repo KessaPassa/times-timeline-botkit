@@ -243,7 +243,7 @@ function sendTaleover(user, text, permalink, channel_name) {
         channel: timeline_id,
         text: text,
         icon_url: user.image_1024,
-        username: user.display_name + (` (${channel_name})`),
+        username: (user.display_name || user.real_name) + (` (${channel_name})`),
         link_names: true,
         attachments: [{
             text: '',
