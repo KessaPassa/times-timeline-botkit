@@ -1,24 +1,26 @@
 /*
 botkitの準備
 */
+let env = require('./secret/secret.json');
 let botkit = require('botkit');
-let mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGODB_URI});
+// let mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGODB_URI});
 
-if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT) {
-    console.log('Error: Specify CLIENT_ID, CLIENT_SECRET, VERIFICATION_TOKEN and PORT in environment');
+if (!env.CLIENT_ID || !env.CLIENT_SECRET) {
+    console.log('Error: environment');
     process.exit(1);
 }
 
 let controller = botkit.slackbot({
-    storage: mongoStorage
+    //storage: mongoStorage
+    json_file_store_path: './secret'
 }).configureSlackApp({
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
+    clientId: env.CLIENT_ID,
+    clientSecret: env.CLIENT_SECRET,
     scopes: ['bot', 'chat:write:user', 'chat:write:bot', 'files:write:user']
 });
 
 let bot = controller.spawn({
-    token: process.env.token
+    token: env.token
 }).startRTM();
 
 bot.api.team.info({}, function (err, res) {
@@ -32,7 +34,7 @@ bot.api.team.info({}, function (err, res) {
     });
 });
 
-controller.setupWebserver(process.env.PORT, function (err, webserver) {
+controller.setupWebserver(process.env.PORT || 8080, function (err, webserver) {
     controller.createWebhookEndpoints(controller.webserver);
 
     controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
@@ -46,84 +48,143 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
 
 
 /*
+データベース初期化
+*/
+let firebase = require("firebase");
+let config = {
+    apiKey: env.apiKey,
+    authDomain: env.authDomain,
+    databaseURL: env.databaseURL,
+    storageBucket: env.storageBucket
+};
+firebase.initializeApp(config);
+let database = firebase.database();
+
+// データベースに追加
+let addDB = function (id, name, text, callback) {
+
+    //データが存在してるか読み取り
+    getDB(id, function (text_array) {
+        console.log(text_array);
+        var result = '';
+
+        //最初の時だけ
+        if (!text_array) {
+            database.ref(`channels/${id}`).set({
+                name: name,
+                text: {
+                    0: MESSAGE,
+                    1: text
+                }
+            });
+            result = 'initialize';
+        }
+        //追加
+        else {
+            var json = {};
+            var i = 0;
+            for (; i < text_array.length; i++) {
+                json[i] = text_array[i];
+            }
+            json[i] = text;
+
+            //データベースにセット
+            database.ref(`channels/${id}`).set({
+                name: name,
+                text: json
+            });
+            result = 'complete';
+        }
+
+        callback(result);
+    });
+};
+
+// データベースから削除
+let removeDB = function (id, name, num, callback) {
+
+    //データが存在してるか読み取り
+    getDB(id, function (text_array) {
+        console.log(text_array);
+        var result = '';
+
+        //何もないと削除できない
+        if (!text_array) {
+            result = null;
+        }
+        //0と、ない数値は消せない
+        else if(num === 0 || text_array.length <= num){
+            result = -1;
+        }
+        //追加
+        else {
+            text_array.splice(num, 1);
+            console.log(text_array);
+
+            var json = {};
+            for (var i=0; i < text_array.length; i++) {
+                json[i] = text_array[i];
+            }
+
+            //データベースにセット
+            database.ref(`channels/${id}`).set({
+                name: name,
+                text: json
+            });
+            result = 'complete';
+        }
+
+        callback(result);
+    });
+};
+
+// データベースから読み込み
+let getDB = function (id, callback) {
+    database.ref(`channels/${id}`).once('value').then(function (snapshot) {
+        if (snapshot.val() != null) {
+            callback(snapshot.val().text);
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+
+
+/*
 メモ機能
 */
 let webclient = require('request');
-let fs = require("fs-extra");
-let mkdirp = require("mkdirp");
-let getDirName = require("path").dirname;
+const MESSAGE = '【現在保存しているメモ】';
 
-const MESSAGE = '現在保存しているメモ数: ';
-
-//チャンネル名のパスを返す
-function getPath(message) {
-    return './todo/' + message.channel + '.txt';
-}
-
-//書き込む
-function writeFile(path, contents, cb) {
-    mkdirp(getDirName(path), function (err) {
-        if (err)
-            return cb(err);
-        fs.writeFile(path, contents, cb);
-    });
-}
-
-//追加する
-function addFile(path, newtext) {
-    fs.readFile(path, 'utf8', function (err, nowtext) {
-        let matches = nowtext.match(/現在保存しているメモ数: (\d+)/);
-        let num = matches[1] * 1 + 1;
-        let newnum = `${MESSAGE}` + num;
-
-        let tasks = nowtext.split(/\(\d+\)/);
-        var write_data = "【" + newnum + "】\n";
-
-        for (var i = 1; i < num; i++) {
-            write_data = write_data + "(" + i + ") " + tasks[i];
-        }
-        write_data = write_data + "\n(" + i + ")" + newtext;
-
-
-        fs.writeFile(path, write_data, function (err) {
-            if (err) throw err;
-        });
-    });
-}
-
-function deleteMessage(channel, ts, time = 10000) {
-    setTimeout(function () {
-        bot.api.chat.delete({
-            channel: channel,
-            ts: ts,
-            as_user: true
-        }, function (err, res) {
-            bot.botkit.log('chat.delete:\n', res);
-        });
-    }, time);
+function deleteMessage(channel, ts, time = 10 * 1000) {
+    //時間が設定されて居るなら
+    if (time != null) {
+        setTimeout(function () {
+            bot.api.chat.delete({
+                token: env.legacy_token,
+                channel: channel,
+                ts: ts,
+                as_user: true
+            }, function (err, res) {
+                bot.botkit.log('chat.delete:\n', res);
+            });
+        }, time);
+    }
 }
 
 controller.hears(['add (.*)'], 'direct_message,direct_mention,mention', function (bot, message) {
-    console.log(message.channel + ' : ' + message.ts);
     deleteMessage(message.channel, message.ts);
 
     let matches = message.text.match(/add (.*)/i);
     if (matches) {
         let text = matches[1];
 
-        controller.storage.users.get(message.user, function (err, user) {
-            let path = getPath(message);
-            if (!fs.existsSync(path)) {
-                writeFile(path, `${MESSAGE}0`, function (err) {
-                    if (err) throw err;
-                    addFile(path, text);
+        getChannelName(message.channel, function (channel_name) {
+            addDB(message.channel, channel_name, text, function (result) {
+                bot.reply(message, "メモを追加しました", function (err, res) {
+                    deleteMessage(res.channel, res.ts);
                 });
-            }
-            else {
-                addFile(path, text);
-            }
-            bot.reply(message, "メモを追加しました", function (err, res) {
-                deleteMessage(res.channel, res.ts);
             });
         });
     }
@@ -135,14 +196,24 @@ controller.hears(['add (.*)'], 'direct_message,direct_mention,mention', function
 });
 
 controller.hears(['list'], 'direct_message,direct_mention,mention', function (bot, message) {
-    deleteMessage(message.channel, message.ts, message.user);
+    deleteMessage(message.channel, message.ts, 10 * 1000);
 
-    controller.storage.users.get(message.user, function (err, user) {
-        let path = getPath(message);
-        fs.readFile(path, 'utf8', function (err, text) {
-            bot.reply(message, text, function (err, res) {
-                deleteMessage(res.channel, res.ts, 60000);
-            });
+    getDB(message.channel, function (text_array) {
+        //エラー
+        if (text_array == null) {
+            console.log('list error');
+        }
+
+        var text = '';
+        for (var i = 0; i < text_array.length; i++) {
+            if (i === 0) {
+                text += `${text_array[i]}\n`;
+            }
+            else
+                text += `${i}. ${text_array[i]}\n`;
+        }
+        bot.reply(message, text, function (err, res) {
+            deleteMessage(res.channel, res.ts, 10 * 1000);
         });
     });
 });
@@ -153,37 +224,21 @@ controller.hears(['remove (.*)'], 'direct_message,direct_mention,mention', funct
 
     var matches = message.text.match(/remove (\d+)/);
     if (matches) {
-        let task = matches[1];
+        let num = matches[1];
 
-        controller.storage.users.get(message.user, function (err, user) {
-            let path = getPath(message);
-            fs.readFile(path, 'utf8', function (err, text) {
-                matches = text.match(/現在保存しているメモ数: \d+/);
-                num = matches[0].match(/\d+/) * 1;
-                if (task <= num) {
-                    bot.reply(message, "(" + task + ")" + "のメモを削除した", function (err, res) {
-                        deleteMessage(res.channel, res.ts);
-                    });
+        getChannelName(message.channel, function (channel_name) {
+            removeDB(message.channel, channel_name, num, function (result) {
+                var content = '';
+                if(result == null)
+                    content = "データがありません";
+                else if(result === -1)
+                    content = "削除できない番号です";
+                else
+                    content = `${num}番のメモを削除した`;
 
-                    let newnum = `${MESSAGE}` + (num - 1);
-                    let tasks = text.split(/\(\d+\)/);
-                    tasks.splice(task, 1);
-                    var write_data = "【" + newnum + "】\n";
-
-                    for (var i = 1; i < num; i++) {
-                        write_data = write_data + "(" + i + ") " + tasks[i];
-                    }
-
-                    fs.writeFile(path, write_data, function (err) {
-                        if (err) throw err;
-                    });
-                }
-                else {
-                    bot.reply(message, "引数が間違ってます", function (err, res) {
-                        deleteMessage(res.channel, res.ts);
-                    });
-                }
-
+                bot.reply(message, content, function (err, res) {
+                    deleteMessage(res.channel, res.ts);
+                });
             });
         });
     }
@@ -198,7 +253,7 @@ controller.hears(['remove (.*)'], 'direct_message,direct_mention,mention', funct
 /*
 timeline処理
 */
-const timeline_id = process.env.timeline_id;
+const timeline_id = env.timeline_id;
 const timeline_name = 'times_timeline';
 
 
@@ -207,7 +262,7 @@ let getUserInfo = function (user_id, callback) {
     webclient.get({
         url: 'https://slack.com/api/users.info',
         qs: {
-            token: process.env.token,
+            token: env.token,
             user: user_id
         }
     }, function (err, res, body) {
@@ -222,7 +277,7 @@ let getChannelName = function (channel_id, callback) {
     webclient.get({
         url: 'https://slack.com/api/channels.info',
         qs: {
-            token: process.env.token,
+            token: env.token,
             channel: channel_id
         }
     }, function (err, res, body) {
@@ -235,7 +290,7 @@ let getChannelName = function (channel_id, callback) {
 //乗っ取り形式
 function sendTaleover(user, text, permalink, channel_name) {
     var footer = permalink;
-    if (!channel_name.match(/#(.*)/)){
+    if (!channel_name.match(/#(.*)/)) {
         footer = '';
     }
 
@@ -294,7 +349,7 @@ controller.hears(['(.*)'], 'ambient', function (bot, message) {
         webclient.get({
             url: 'https://slack.com/api/chat.getPermalink',
             qs: {
-                token: process.env.token,
+                token: env.token,
                 channel: message.channel,
                 message_ts: message.ts
             }
@@ -319,7 +374,7 @@ controller.on(['file_shared'], function (bot, message) {
     webclient.get({
         url: "https://slack.com/api/files.sharedPublicURL",
         qs: {
-            token: process.env.legacy_token,
+            token: env.legacy_token,
             file: message.file_id
         }
     }, function (err, res, body) {

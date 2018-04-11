@@ -9,10 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "botkit": "^0.6.11",
+    "botkit": "^0.6.13",
     "botkit-storage-mongo": "^1.0.7",
-    "fs-extra": "^5.0.0",
-    "mkdirp": "^0.5.1",
+    "firebase": "^4.12.1",
+    "ref-struct": "^1.1.0",
     "request": "^2.85.0"
   }
 }
