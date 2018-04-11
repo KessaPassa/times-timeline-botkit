@@ -12,4 +12,4 @@ examples/db_team_bot/
 .idea
 .vscode
 coverage
-secret.json
+secret/
