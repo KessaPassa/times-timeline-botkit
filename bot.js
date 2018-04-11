@@ -160,7 +160,7 @@ let getDB = function (id, callback) {
 let webclient = require('request');
 const MESSAGE = '【現在保存しているメモ】';
 
-function deleteMessage(channel, ts, time = 10 * 1000) {
+function deleteMessage(channel, ts, time = 30 * 1000) {
     //時間が設定されて居るなら
     if (time != null) {
         setTimeout(function () {
@@ -199,7 +199,7 @@ controller.hears(['add (.*)'], 'direct_message,direct_mention,mention', function
 });
 
 controller.hears(['list'], 'direct_message,direct_mention,mention', function (bot, message) {
-    deleteMessage(message.channel, message.ts, 10 * 1000);
+    deleteMessage(message.channel, message.ts);
 
     getDB(message.channel, function (text_array) {
         //エラー
@@ -209,14 +209,13 @@ controller.hears(['list'], 'direct_message,direct_mention,mention', function (bo
 
         var text = '';
         for (var i = 0; i < text_array.length; i++) {
-            if (i === 0) {
+            if (i === 0)
                 text += `${text_array[i]}\n`;
-            }
             else
                 text += `${i}. ${text_array[i]}\n`;
         }
         bot.reply(message, text, function (err, res) {
-            deleteMessage(res.channel, res.ts, 10 * 1000);
+            deleteMessage(res.channel, res.ts, 3 * 60 * 1000);
         });
     });
 });
