@@ -1,18 +1,21 @@
 /*
 botkitの準備
 */
-let env = require('./secret/secret.json');
-let botkit = require('botkit');
-// let mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGODB_URI});
 
+//ローカルと本番環境の切り替え
+// let env = require('./secret/secret.json');
+let env = process.env;
+let mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGODB_URI});
+
+let botkit = require('botkit');
 if (!env.CLIENT_ID || !env.CLIENT_SECRET) {
     console.log('Error: environment');
     process.exit(1);
 }
 
 let controller = botkit.slackbot({
-    //storage: mongoStorage
-    json_file_store_path: './secret'
+    storage: mongoStorage
+    // json_file_store_path: './secret'
 }).configureSlackApp({
     clientId: env.CLIENT_ID,
     clientSecret: env.CLIENT_SECRET,
@@ -34,7 +37,7 @@ bot.api.team.info({}, function (err, res) {
     });
 });
 
-controller.setupWebserver(process.env.PORT || 8080, function (err, webserver) {
+controller.setupWebserver(env.PORT || 8080, function (err, webserver) {
     controller.createWebhookEndpoints(controller.webserver);
 
     controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
