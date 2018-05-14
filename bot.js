@@ -37,7 +37,7 @@ bot.api.team.info({}, function (err, res) {
     });
 });
 
-controller.setupWebserver(env.PORT || 8080, function (err, webserver) {
+controller.setupWebserver(env.PORT || 8000, function (err, webserver) {
     controller.createWebhookEndpoints(controller.webserver);
 
     controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
@@ -116,7 +116,7 @@ let removeDB = function (id, name, num, callback) {
             result = null;
         }
         //0と、ない数値は消せない
-        else if(num === 0 || text_array.length <= num){
+        else if (num === 0 || text_array.length <= num) {
             result = -1;
         }
         //追加
@@ -125,7 +125,7 @@ let removeDB = function (id, name, num, callback) {
             console.log(text_array);
 
             var json = {};
-            for (var i=0; i < text_array.length; i++) {
+            for (var i = 0; i < text_array.length; i++) {
                 json[i] = text_array[i];
             }
 
@@ -161,19 +161,16 @@ let webclient = require('request');
 const MESSAGE = '【現在保存しているメモ】';
 
 function deleteMessage(channel, ts, time = 30 * 1000) {
-    //時間が設定されて居るなら
-    if (time != null) {
-        setTimeout(function () {
-            bot.api.chat.delete({
-                token: env.legacy_token,
-                channel: channel,
-                ts: ts,
-                as_user: true
-            }, function (err, res) {
-                bot.botkit.log('chat.delete:\n', res);
-            });
-        }, time);
-    }
+    setTimeout(function () {
+        bot.api.chat.delete({
+            token: env.legacy_token,
+            channel: channel,
+            ts: ts,
+            as_user: true
+        }, function (err, res) {
+            bot.botkit.log('chat.delete:\n', res);
+        });
+    }, time);
 }
 
 controller.hears(['add (.*)'], 'direct_message,direct_mention,mention', function (bot, message) {
@@ -199,7 +196,7 @@ controller.hears(['add (.*)'], 'direct_message,direct_mention,mention', function
 });
 
 controller.hears(['list'], 'direct_message,direct_mention,mention', function (bot, message) {
-    deleteMessage(message.channel, message.ts);
+    deleteMessage(message.channel, message.ts, 3 * 60 * 1000);
 
     getDB(message.channel, function (text_array) {
         //エラー
@@ -231,9 +228,9 @@ controller.hears(['remove (.*)'], 'direct_message,direct_mention,mention', funct
         getChannelName(message.channel, function (channel_name) {
             removeDB(message.channel, channel_name, num, function (result) {
                 var content = '';
-                if(result == null)
+                if (result == null)
                     content = "データがありません";
-                else if(result === -1)
+                else if (result === -1)
                     content = "削除できない番号です";
                 else
                     content = `${num}番のメモを削除した`;
@@ -332,9 +329,9 @@ function sendQuotelink(user, text, permalink) {
 controller.hears(['(.*)'], 'ambient', function (bot, message) {
 
     console.log(message);
-    let type = message.type.match('mention');
-    if (type)
-        return -1;
+    // let type = message.type.match('mention');
+    // if (type)
+    //     return -1;
 
     //チャンネル名
     bot.api.channels.info({
@@ -343,9 +340,11 @@ controller.hears(['(.*)'], 'ambient', function (bot, message) {
         let channel_name = res.channel.name;
         let matches = channel_name.match(/times_(.*)/);
 
-        //timelineなら何もしない
-        if (channel_name === timeline_name || !matches)
+        //timelineならread-onlyなので警告する
+        if (channel_name === timeline_name || !matches) {
+            bot.reply(message, 'ここで喋っちゃダメなんだよ〜');
             return -1;
+        }
 
         //メッセージのリンク取得
         webclient.get({
