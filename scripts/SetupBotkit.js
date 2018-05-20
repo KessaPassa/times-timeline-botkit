@@ -1,5 +1,6 @@
-var controller = null;
 var env = null;
+var controller = null;
+var bot = null;
 
 exports.setup = function () {
     /*
@@ -26,7 +27,7 @@ botkitの準備
         scopes: ['bot', 'chat:write:user', 'chat:write:bot', 'files:write:user']
     });
 
-    let bot = controller.spawn({
+    bot = controller.spawn({
         token: env.token
     }).startRTM();
 
@@ -54,6 +55,13 @@ botkitの準備
     });
 }
 
+exports.env = function(){
+    if (env != null)
+        return env;
+    else
+        return null;
+}
+
 exports.controller = function(){
     if (controller != null)
         return controller;
@@ -61,9 +69,9 @@ exports.controller = function(){
         return null;
 }
 
-exports.env = function(){
-    if (env != null)
-        return env;
+exports.bot = function(){
+    if (bot != null)
+        return bot;
     else
         return null;
 }

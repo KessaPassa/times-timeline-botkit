@@ -2,6 +2,7 @@ const botkit = require('./scripts/SetupBotkit');
 botkit.setup();
 let env = botkit.env();
 let controller = botkit.controller();
+let bot = botkit.bot();
 
 // read-only && staticのように扱う
 const Message = require('./scripts/Messages');
