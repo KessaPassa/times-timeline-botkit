@@ -1,3 +1,49 @@
+module.exports = class Messages{
+    constructor(){}
+
+    // -------- 内部用 --------
+
+    // エラー箇所を関数名で示す
+    error(function_name) {
+        return 'error: ' + function_name;
+    }
+
+    // -------- End --------
+
+    // -------- botに喋らせる用(cv: エルフのえる) --------
+    header() {
+        return 'える知ってるよ〜。';
+    }
+
+    // add
+    add() {
+        return 'メモを追加したよ';
+    }
+
+    //list(Database)
+    list_header() {
+        return '【ここのメモ帳だよ】';
+    }
+
+    // remove
+    cant_data() {
+        return Messages.header() + 'データがないんだよ〜';
+    }
+
+    cant_remove() {
+        return Messages.header() + 'その番号ないんだよ〜';
+    }
+
+    removed(num) {
+        return `${num}番のメモを削除したよ`;
+    }
+
+    // Common
+   　wrong_arguments() {
+        return '引数が間違ってるよ〜';
+    }
+}
+
 // module.exports = class Messages {
 //
 //     // -------- 内部用 --------
