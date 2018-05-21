@@ -1,6 +1,6 @@
 // import env from './env';
 import botkit from 'botkit';
-import mongo from 'bot-storage-mongo';
+import mongo from 'botkit-storage-mongo';
 let env = process.env;
 
 
