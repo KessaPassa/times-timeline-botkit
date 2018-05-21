@@ -1,10 +1,8 @@
-import * as env from '../secret/env';
+// import env from './env';
 import * as api from './SlackApi';
 import * as Messages from './Messages';
 import request from 'request';
-
-const timeline_name = 'times_timeline';
-
+let env = process.env;
 
 export function chat(bot, message) {
     console.log(message);
@@ -17,7 +15,7 @@ export function chat(bot, message) {
         let matches = channel_name.match(/times_(.*)/);
 
         //timelineならread-onlyなので警告する
-        if (channel_name === timeline_name || !matches) {
+        if (channel_name === env.timeline_name || !matches) {
             bot.reply(message, Messages.cant_chat());
             return -1;
         }

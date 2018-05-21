@@ -1,5 +1,6 @@
-import * as env from '../secret/env';
+// import env from './env';
 import botkit from 'botkit';
+let env = process.env;
 
 
 // botkitの準備

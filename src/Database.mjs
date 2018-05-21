@@ -1,7 +1,8 @@
-import * as env from '../secret/env';
+// import env from './env';
 import * as Messages from './Messages';
 import firebase from 'firebase';
 let database = null;
+let env = process.env;
 
 
 // データベース初期化

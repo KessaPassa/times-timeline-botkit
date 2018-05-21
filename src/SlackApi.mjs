@@ -1,11 +1,10 @@
-// const env = require('../secret/secret.json');
-// const request = require('request');
-import * as env from '../secret/env';
+// import env from './env';
 import request from 'request';
+let env = process.env;
 
 
 // メッセージ削除
-export function deleteMessage(channel, ts, time = 5 * 1000) {
+export function deleteMessage(channel, ts, time = 30 * 1000) {
     setTimeout(function () {
         request.post({
             url: 'https://slack.com/api/chat.delete',
