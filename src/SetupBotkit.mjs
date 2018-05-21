@@ -1,27 +1,19 @@
 import * as env from '../secret/env';
 import botkit from 'botkit';
-// const env = require('./env');
-// const botkit = require('botkit');
 
-// export var controller;
 
 // botkitの準備
 export function setup() {
-    //ローカルと本番環境の切り替え
-    // let env = require('./env.mjs');
-    // env = require('../secret/secret.json');
-    // env = process.env;
-    // let mongoStorage = require('bot-storage-mongo')({mongoUri: process.env.MONGODB_URI});
 
-    // let bot = require('bot');
     if (!env.CLIENT_ID || !env.CLIENT_SECRET) {
         console.log('Error: environment');
         process.exit(1);
     }
 
+    let mongoStorage = require('bot-storage-mongo')({mongoUri: process.env.MONGODB_URI});
     let controller = botkit.slackbot({
-        // storage: mongoStorage
-        json_file_store_path: './secret'
+        storage: mongoStorage
+        // json_file_store_path: './secret'
     }).configureSlackApp({
         clientId: env.CLIENT_ID,
         clientSecret: env.CLIENT_SECRET,

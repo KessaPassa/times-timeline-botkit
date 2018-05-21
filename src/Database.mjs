@@ -1,12 +1,8 @@
-// const env = require('../secret/secret.json');
 import * as env from '../secret/env';
-// read-only && staticのように扱う
-// const Messages = require('./Messages');
 import * as Messages from './Messages';
-//
-// let firebase = require("firebase");
 import firebase from 'firebase';
 let database = null;
+
 
 // データベース初期化
 export function setup() {

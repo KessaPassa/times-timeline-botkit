@@ -1,7 +1,3 @@
-// const database = require('./Database');
-// const api = require('./SlackApi');
-// const Messages = require('./Messages');
-//
 import * as database from './Database';
 import * as api from './SlackApi';
 import * as Messages from './Messages';

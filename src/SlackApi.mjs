@@ -3,8 +3,6 @@
 import * as env from '../secret/env';
 import request from 'request';
 
-// const timeline_id = env.timeline_id;
-
 
 // メッセージ削除
 export function deleteMessage(channel, ts, time = 5 * 1000) {
@@ -18,9 +16,7 @@ export function deleteMessage(channel, ts, time = 5 * 1000) {
                 as_user: true
             }
         }, function (err, res, body) {
-            // if (err) throw err;
             console.log('chat.delete');
-            console.log(body);
         });
     }, time);
 }
@@ -71,13 +67,14 @@ export function sendTaleover(user, text, permalink, channel_name) {
             icon_url: user.image_1024,
             username: (user.display_name || user.real_name) + (` (${channel_name})`),
             link_names: true,
-            attachments: [{
+            attachments: JSON.stringify([{
                 text: '',
                 footer: footer
-            }]
+            }])
         }
     }, function (err, res, body) {
         if (err) throw err;
+        console.log(body);
     });
 }
 
@@ -87,16 +84,17 @@ export function sendQuotelink(user, text, permalink) {
         url: 'https://slack.com/api/chat.postMessage',
         form: {
             token: env.token,
-            channel: timeline_id,
+            channel: env.timeline_id,
             text: permalink,
             link_names: true,
-            attachments: [{
+            attachments: JSON.stringify([{
                 author_name: user.display_name,
                 author_icon: user.image_1024,
-                text: text,
-            }]
+                text: text
+            }])
+        }, function (err, res, body) {
+            if (err) throw err;
+            console.log(body);
         }
-    }, function (err, res, body) {
-        if (err) throw err;
     });
 }

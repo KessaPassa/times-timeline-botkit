@@ -1,18 +1,9 @@
-// const env = require('../secret/secret.json');
-// const api = require('./SlackApi');
-// const request = require('request');
-// const Messages = require('./Messages');
-//
 import * as env from '../secret/env';
 import * as api from './SlackApi';
 import * as Messages from './Messages';
 import request from 'request';
 
-
 const timeline_name = 'times_timeline';
-
-// const Message = require('./Messages');
-// const Messages = new Message();
 
 
 export function chat(bot, message) {
