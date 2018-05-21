@@ -1,5 +1,6 @@
 // import env from './env';
 import botkit from 'botkit';
+import mongo from 'bot-storage-mongo';
 let env = process.env;
 
 
@@ -11,7 +12,7 @@ export function setup() {
         process.exit(1);
     }
 
-    let mongoStorage = require('bot-storage-mongo')({mongoUri: process.env.MONGODB_URI});
+    let mongoStorage = mongo({mongoUri: env.MONGODB_URI});
     let controller = botkit.slackbot({
         storage: mongoStorage
         // json_file_store_path: './secret'
