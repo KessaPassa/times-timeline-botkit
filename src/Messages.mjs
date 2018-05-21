@@ -1,47 +1,48 @@
-module.exports = class Messages{
-    constructor(){}
+// -------- 内部用 --------
 
-    // -------- 内部用 --------
+// エラー箇所を関数名で示す
+export function error(function_name) {
+    return 'error: ' + function_name;
+}
 
-    // エラー箇所を関数名で示す
-    error(function_name) {
-        return 'error: ' + function_name;
-    }
+// -------- End --------
 
-    // -------- End --------
+// -------- botに喋らせる用(cv: エルフのえる) --------
+export function header() {
+    return 'える知ってるよ〜。';
+}
 
-    // -------- botに喋らせる用(cv: エルフのえる) --------
-    header() {
-        return 'える知ってるよ〜。';
-    }
+// add
+export function add() {
+    return 'メモを追加したよ';
+}
 
-    // add
-    add() {
-        return 'メモを追加したよ';
-    }
+//list(Database)
+export function list_header() {
+    return '【ここのメモ帳だよ】';
+}
 
-    //list(Database)
-    list_header() {
-        return '【ここのメモ帳だよ】';
-    }
+// remove
+export function cant_data() {
+    return header() + 'データがないんだよ〜';
+}
 
-    // remove
-    cant_data() {
-        return Messages.header() + 'データがないんだよ〜';
-    }
+export function cant_remove() {
+    return header() + 'その番号ないんだよ〜';
+}
 
-    cant_remove() {
-        return Messages.header() + 'その番号ないんだよ〜';
-    }
+export function removed(num) {
+    return `${num}番のメモを削除したよ`;
+}
 
-    removed(num) {
-        return `${num}番のメモを削除したよ`;
-    }
+// timeline
+export function cant_chat() {
+    return 'ここで喋っちゃダメなんだよ〜';
+}
 
-    // Common
-   　wrong_arguments() {
-        return '引数が間違ってるよ〜';
-    }
+// Common
+export function wrong_arguments() {
+    return '引数が間違ってるよ〜';
 }
 
 // module.exports = class Messages {
