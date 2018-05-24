@@ -20,6 +20,21 @@ controller.hears(['remove (.*)'], 'direct_message,direct_mention,mention', funct
 });
 
 
+// 在室管理
+import * as room from './src/Room';
+controller.hears(['login'], 'direct_message,direct_mention,mention', function (bot, message) {
+    room.login(bot, message);
+});
+
+controller.hears(['logout'], 'direct_message,direct_mention,mention', function (bot, message) {
+    room.logout(bot, message);
+});
+
+controller.hears(['room'], 'direct_message,direct_mention,mention', function (bot, message) {
+    room.room(bot, message);
+});
+
+
 // 分報機能
 import * as timeline from './src/Timeline'
 controller.hears(['(.*)'], 'ambient', function (bot, message) {

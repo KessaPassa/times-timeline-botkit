@@ -1,6 +1,6 @@
-// import env from './env';
+import * as env from '../secret/env';
+// let env = process.env;
 import request from 'request';
-let env = process.env;
 
 
 // メッセージ削除

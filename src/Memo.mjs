@@ -28,7 +28,7 @@ export function add(bot, message) {
 export function list(bot, message) {
     api.deleteMessage(message.channel, message.ts, 3 * 60 * 1000);
 
-    database.get(message.channel, function (text_array) {
+    database.getChannels(message.channel, function (text_array) {
         //エラー
         if (text_array == null) {
             console.log('list error');

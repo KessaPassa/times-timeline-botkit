@@ -1,7 +1,7 @@
-// import env from './env';
+import * as env from '../secret/env';
+// let env = process.env;
 import botkit from 'botkit';
 import mongo from 'botkit-storage-mongo';
-let env = process.env;
 
 
 // botkitの準備
@@ -12,10 +12,10 @@ export function setup() {
         process.exit(1);
     }
 
-    let mongoStorage = mongo({mongoUri: env.MONGODB_URI});
+    // let mongoStorage = mongo({mongoUri: env.MONGODB_URI});
     let controller = botkit.slackbot({
-        storage: mongoStorage
-        // json_file_store_path: './secret'
+        // storage: mongoStorage
+        json_file_store_path: './secret'
     }).configureSlackApp({
         clientId: env.CLIENT_ID,
         clientSecret: env.CLIENT_SECRET,

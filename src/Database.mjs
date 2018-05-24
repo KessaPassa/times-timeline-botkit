@@ -1,8 +1,13 @@
-// import env from './env';
+import * as env from '../secret/env';
+// let env = process.env;
 import * as Messages from './Messages';
 import firebase from 'firebase';
+
 let database = null;
-let env = process.env;
+
+const DUMMY = 'Dummy';
+const MEMO = 'channels';
+const ROOM = 'room';
 
 
 // データベース初期化
@@ -17,15 +22,30 @@ export function setup() {
     database = firebase.database();
 }
 
-export function add(id, name, text, callback){
+
+
+// データベースから読み込み
+export function getChannels(id, callback) {
+    database.ref(`${MEMO}/${id}`).once('value').then(function (snapshot) {
+        if (snapshot.val() != null) {
+            callback(snapshot.val().text);
+        }
+        else {
+            callback(null);
+        }
+    });
+}
+
+
+export function add(id, name, text, callback) {
     //データが存在してるか読み取り
-    get(id, function (text_array) {
+    getChannels(id, function (text_array) {
         console.log(text_array);
         var result = '';
 
         //最初の時だけ
         if (!text_array) {
-            database.ref(`channels/${id}`).set({
+            database.ref(`${MEMO}/${id}`).set({
                 name: name,
                 text: {
                     0: Messages.list_header(),
@@ -44,7 +64,7 @@ export function add(id, name, text, callback){
             json[i] = text;
 
             //データベースにセット
-            database.ref(`channels/${id}`).set({
+            database.ref(`${MEMO}/${id}`).set({
                 name: name,
                 text: json
             });
@@ -58,7 +78,7 @@ export function add(id, name, text, callback){
 export function remove(id, name, num, callback) {
 
     //データが存在してるか読み取り
-    get(id, function (text_array) {
+    getChannels(id, function (text_array) {
         console.log(text_array);
         var result = '';
 
@@ -81,7 +101,7 @@ export function remove(id, name, num, callback) {
             }
 
             //データベースにセット
-            database.ref(`channels/${id}`).set({
+            database.ref(`${MEMO}/${id}`).set({
                 name: name,
                 text: json
             });
@@ -92,14 +112,71 @@ export function remove(id, name, num, callback) {
     });
 }
 
+
 // データベースから読み込み
-export function get(id, callback) {
-    database.ref(`channels/${id}`).once('value').then(function (snapshot) {
+export function getRoom(callback) {
+    database.ref(ROOM).once('value').then(function (snapshot) {
         if (snapshot.val() != null) {
-            callback(snapshot.val().text);
+            let ids = [];
+            let names = [];
+
+            snapshot.forEach(function(result){
+                if (result.key !== DUMMY) {
+                    ids.push(result.key);
+                    names.push(result.child('name').val());
+                }
+            });
+
+            callback(ids, names);
         }
         else {
             callback(null);
         }
+    });
+}
+
+export function login(id, name, callback) {
+
+
+    getRoom(function (ids, names) {
+        if (ids != null) {
+            for (let i = 0; i < ids.length; i++) {
+                // 既にログインしているなら
+                if (ids[i] === id) {
+                    callback(null);
+                    return;
+                }
+            }
+        }
+
+        //データベースにセット
+        database.ref(`${ROOM}/${id}`).set({
+            name: name,
+            text: 'login'
+        });
+
+        callback('new');
+    });
+}
+
+export function logout(id, callback){
+
+    getRoom(function (ids, names) {
+        if (ids != null) {
+            for (let i = 0; i < ids.length; i++) {
+                // ログインしているなら
+                if (ids[i] === id) {
+                    // nullをセットすることで削除する
+                    database.ref(`${ROOM}/${id}`).set({
+                        name: null,
+                        text: null
+                    });
+                    callback('complete');
+                    return;
+                }
+            }
+        }
+
+        callback(null);
     });
 }
