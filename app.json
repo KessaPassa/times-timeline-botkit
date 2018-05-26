@@ -1,0 +1,59 @@
+{
+  "name": "times-timeline-botkit",
+  "scripts": {
+  },
+  "env": {
+    "anyKey": {
+      "required": true
+    },
+    "authDomain": {
+      "required": true
+    },
+    "CLIENT_ID": {
+      "required": true
+    },
+    "CLIENT_SECRET": {
+      "required": true
+    },
+    "databaseURL": {
+      "required": true
+    },
+    "legacy_token": {
+      "required": true
+    },
+    "MONGODB_URI": {
+      "required": true
+    },
+    "room_id": {
+      "required": true
+    },
+    "room_name": {
+      "required": true
+    },
+    "strageBucket": {
+      "required": true
+    },
+    "timeline_id": {
+      "required": true
+    },
+    "timeline_name": {
+      "required": true
+    },
+    "token": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "mongolab"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
