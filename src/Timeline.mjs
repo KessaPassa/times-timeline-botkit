@@ -13,10 +13,10 @@ export function chat(bot, message) {
         channel: message.channel
     }, function (err, res) {
         let channel_name = res.channel.name;
-        let matches = channel_name.match(/times_(.*)/);
 
         //timelineならread-onlyなので警告する
-        if (channel_name === env.timeline_name || !matches) {
+        console.log('channelNama: ' + channel_name);
+        if (channel_name === env.timeline_name) {
             bot.reply(message, Messages.cant_chat());
             return -1;
         }
