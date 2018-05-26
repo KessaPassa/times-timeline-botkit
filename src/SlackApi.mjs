@@ -1,6 +1,6 @@
-// import env from './env';
-import request from 'request';
+// import * as env from '../secret/env';
 let env = process.env;
+import request from 'request';
 
 
 // メッセージ削除
@@ -94,6 +94,19 @@ export function sendQuotelink(user, text, permalink) {
         }, function (err, res, body) {
             if (err) throw err;
             console.log(body);
+        }
+    });
+}
+
+
+//　普通にメッセージを送る
+export function postMessage(channel, text){
+    request.post({
+        url: 'https://slack.com/api/chat.postMessage',
+        form:{
+            token: env.token,
+            channel: channel,
+            text: text
         }
     });
 }

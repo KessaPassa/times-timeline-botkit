@@ -22,6 +22,10 @@ export function list_header() {
     return '【ここのメモ帳だよ】';
 }
 
+export function none_memo(){
+    return 'メモはないよ';
+}
+
 // remove
 export function cant_data() {
     return header() + 'データがないんだよ〜';
@@ -34,6 +38,25 @@ export function cant_remove() {
 export function removed(num) {
     return `${num}番のメモを削除したよ`;
 }
+
+
+// room
+export function allreadyLogin(){
+    return 'もうログインしてるよ';
+}
+
+export function login(){
+    return 'いらっしゃ〜いだよ';
+}
+
+export function alreadyLogout(){
+    return 'もうログアウトしてるよ';
+}
+
+export function logout(){
+    return 'お疲れ様だよ';
+}
+
 
 // timeline
 export function cant_chat() {
@@ -57,26 +80,26 @@ export function wrong_arguments() {
 //     // -------- End --------
 //
 //     // -------- botに喋らせる用(cv: エルフのえる) --------
-//     static get header() {
+//     static getChannels header() {
 //         return 'える知ってるよ〜。';
 //     }
 //
 //     // add
-//     static get add() {
+//     static getChannels add() {
 //         return 'メモを追加したよ';
 //     }
 //
 //     //list(Database)
-//     static get list_header() {
+//     static getChannels list_header() {
 //         return '【ここのメモ帳だよ】';
 //     }
 //
 //     // remove
-//     static get cant_data() {
+//     static getChannels cant_data() {
 //         return Messages.header() + 'データがないんだよ〜';
 //     }
 //
-//     static get cant_remove() {
+//     static getChannels cant_remove() {
 //         return Messages.header() + 'その番号ないんだよ〜';
 //     }
 //
@@ -85,7 +108,7 @@ export function wrong_arguments() {
 //     }
 //
 //     // Common
-//     static get wrong_arguments() {
+//     static getChannels wrong_arguments() {
 //         return '引数が間違ってるよ〜';
 //     }
 //

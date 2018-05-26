@@ -1,8 +1,9 @@
-// import env from './env';
+// import * as env from '../secret/env';
+let env = process.env;
 import * as api from './SlackApi';
 import * as Messages from './Messages';
 import request from 'request';
-let env = process.env;
+
 
 export function chat(bot, message) {
     console.log(message);
