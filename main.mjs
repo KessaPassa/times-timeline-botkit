@@ -36,8 +36,8 @@ controller.hears(['room'], 'direct_mention,mention', function (bot, message) {
 
 import schedule from 'node-schedule';
 schedule.scheduleJob({
-    hour: 15,
-    minute: 50
+    hour: 5,
+    minute: 0
 }, function () {
     room.forceLogout();
 });

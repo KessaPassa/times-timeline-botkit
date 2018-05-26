@@ -1,5 +1,5 @@
-import * as env from '../secret/env';
-// let env = process.env;
+// import * as env from '../secret/env';
+let env = process.env;
 import request from 'request';
 
 
