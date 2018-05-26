@@ -34,6 +34,7 @@ export function list(bot, message) {
             bot.reply(message, Messages.none_memo(), function (err, res) {
                 api.deleteMessage(res.channel, res.ts);
             });
+            return;
         }
 
         let text = '';
