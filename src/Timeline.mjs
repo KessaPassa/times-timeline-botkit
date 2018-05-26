@@ -16,10 +16,13 @@ export function chat(bot, message) {
         let matches = channel_name.match(/times_(.*)/);
 
         //timelineならread-onlyなので警告する
-        if (channel_name === env.timeline_name || !matches) {
+        if (channel_name === env.timeline_name) {
             bot.reply(message, Messages.cant_chat());
             return -1;
         }
+        // times系じゃなければ何もしない
+        else if (!matches)
+            return -1;
 
         //メッセージのリンク取得
         request.get({
