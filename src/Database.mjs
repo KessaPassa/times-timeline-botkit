@@ -40,7 +40,7 @@ export function add(id, name, text, callback) {
     //データが存在してるか読み取り
     getChannels(id, function (text_array) {
         console.log(text_array);
-        var result = '';
+        let result = '';
 
         //最初の時だけ
         if (!text_array) {
@@ -55,8 +55,8 @@ export function add(id, name, text, callback) {
         }
         //追加
         else {
-            var json = {};
-            var i = 0;
+            let json = {};
+            let i = 0;
             for (; i < text_array.length; i++) {
                 json[i] = text_array[i];
             }
@@ -79,7 +79,7 @@ export function remove(id, name, num, callback) {
     //データが存在してるか読み取り
     getChannels(id, function (text_array) {
         console.log(text_array);
-        var result = '';
+        let result = '';
 
         //何もないと削除できない
         if (!text_array) {
@@ -94,8 +94,8 @@ export function remove(id, name, num, callback) {
             text_array.splice(num, 1);
             console.log(text_array);
 
-            var json = {};
-            for (var i = 0; i < text_array.length; i++) {
+            let json = {};
+            for (let i = 0; i < text_array.length; i++) {
                 json[i] = text_array[i];
             }
 

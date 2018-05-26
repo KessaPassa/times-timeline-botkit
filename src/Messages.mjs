@@ -22,6 +22,10 @@ export function list_header() {
     return '【ここのメモ帳だよ】';
 }
 
+export function none_memo(){
+    return 'メモはないよ';
+}
+
 // remove
 export function cant_data() {
     return header() + 'データがないんだよ〜';

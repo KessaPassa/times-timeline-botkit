@@ -29,13 +29,15 @@ export function list(bot, message) {
     api.deleteMessage(message.channel, message.ts, 3 * 60 * 1000);
 
     database.getChannels(message.channel, function (text_array) {
-        //エラー
+        // メモがない時
         if (text_array == null) {
-            console.log('list error');
+            bot.reply(message, Messages.none_memo(), function (err, res) {
+                api.deleteMessage(res.channel, res.ts);
+            });
         }
 
-        var text = '';
-        for (var i = 0; i < text_array.length; i++) {
+        let text = '';
+        for (let i = 0; i < text_array.length; i++) {
             if (i === 0)
                 text += `${text_array[i]}\n`;
             else
@@ -51,13 +53,13 @@ export function list(bot, message) {
 export function remove(bot, message) {
     api.deleteMessage(message.channel, message.ts);
 
-    var matches = message.text.match(/remove (\d+)/);
+    let matches = message.text.match(/remove (\d+)/);
     if (matches) {
         let num = matches[1];
 
         api.getChannelName(message.channel, function (channel_name) {
             database.remove(message.channel, channel_name, num, function (result) {
-                var content = '';
+                let content = '';
                 if (result == null)
                     content = Messages.cant_data();
                 else if (result === -1)
