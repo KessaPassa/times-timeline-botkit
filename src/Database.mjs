@@ -23,7 +23,6 @@ export function setup() {
 }
 
 
-
 // データベースから読み込み
 export function getChannels(id, callback) {
     database.ref(`${MEMO}/${id}`).once('value').then(function (snapshot) {
@@ -120,7 +119,7 @@ export function getRoom(callback) {
             let ids = [];
             let names = [];
 
-            snapshot.forEach(function(result){
+            snapshot.forEach(function (result) {
                 if (result.key !== DUMMY) {
                     ids.push(result.key);
                     names.push(result.child('name').val());
@@ -159,7 +158,7 @@ export function login(id, name, callback) {
     });
 }
 
-export function logout(id, callback){
+export function logout(id, callback) {
 
     getRoom(function (ids, names) {
         if (ids != null) {
@@ -178,5 +177,24 @@ export function logout(id, callback){
         }
 
         callback(null);
+    });
+}
+
+// 全員強制logout
+export function forceLogout(callback) {
+    getRoom(function (ids, names) {
+        if (ids != null) {
+            for (let i = 0; i < ids.length; i++) {
+                // nullをセットすることで削除する
+                database.ref(`${ROOM}/${ids[i]}`).set({
+                    name: null,
+                    text: null
+                });
+            }
+            callback(names);
+        }
+        else{
+            callback(null);
+        }
     });
 }

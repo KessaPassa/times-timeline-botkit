@@ -97,3 +97,16 @@ export function sendQuotelink(user, text, permalink) {
         }
     });
 }
+
+
+//　普通にメッセージを送る
+export function postMessage(channel, text){
+    request.post({
+        url: 'https://slack.com/api/chat.postMessage',
+        form:{
+            token: env.token,
+            channel: channel,
+            text: text
+        }
+    });
+}
