@@ -1,6 +1,22 @@
 import * as bot from './src/SetupBotkit';
 let controller = bot.setup();
 
+import http from 'http'
+import request from 'request';
+let server = http.createServer(function(req, res) {
+    const url = 'https://times-timeline-botkit-stg.herokuapp.com/'
+    if (req.url === url && req.method === 'GET') {
+        request.get({
+            url: url
+        }, function (err, res, body) {
+            if (err) throw err;
+            res.send('起動したよ')
+        });
+    }
+});
+
+
+// データベース
 import * as database from './src/Database';
 database.setup();
 
@@ -45,6 +61,7 @@ schedule.scheduleJob({
 
 // 分報機能
 import * as timeline from './src/Timeline'
+import * as env from "./secret/env";
 controller.hears(['(.*)'], 'ambient', function (bot, message) {
     timeline.chat(bot, message);
 });
