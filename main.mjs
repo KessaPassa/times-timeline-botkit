@@ -1,19 +1,19 @@
 import * as bot from './src/SetupBotkit';
 let controller = bot.setup();
 
-import http from 'http'
-import request from 'request';
-let server = http.createServer(function(req, res) {
-    const url = 'https://times-timeline-botkit-stg.herokuapp.com/'
-    if (req.url === url && req.method === 'GET') {
-        request.get({
-            url: url
-        }, function (err, res, body) {
-            if (err) throw err;
-            res.send('起動したよ')
-        });
-    }
-});
+// import http from 'http'
+// import request from 'request';
+// let server = http.createServer(function(req, res) {
+//     const url = 'https://times-timeline-botkit-stg.herokuapp.com/'
+//     if (req.url === url && req.method === 'GET') {
+//         request.get({
+//             url: url
+//         }, function (err, res, body) {
+//             if (err) throw err;
+//             res.send('起動したよ')
+//         });
+//     }
+// });
 
 
 // データベース
