@@ -64,9 +64,9 @@ export function room(bot, message) {
 }
 
 export function forceLogout(){
-    console.log('強制ログアウト');
     database.forceLogout(function (names) {
-        if (names != null) {
+        console.log(`強制ログアウト, 数: ${names.length}`);
+        if (names.length !== 0) {
             let list = '5時になったから強制退去したよ\n';
             for (let i=0; i<names.length; i++){
                 list += `${names[i]}\n`;

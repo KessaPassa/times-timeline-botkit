@@ -37,7 +37,8 @@ export function setup() {
         });
     });
 
-    controller.setupWebserver(env.PORT || 8020, function (err, webserver) {
+    controller.setupWebserver(env.PORT || 8080, function (err, webserver) {
+        console.log('webserver' + webserver);
         controller.createWebhookEndpoints(controller.webserver);
 
         controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
