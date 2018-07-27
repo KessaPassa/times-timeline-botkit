@@ -1,6 +1,6 @@
 // import * as env from '../secret/env';
 let env = process.env;
-import mongo from 'botkit-storage-mongo';
+// import mongo from 'botkit-storage-mongo';
 import botkit from 'botkit';
 
 
@@ -38,6 +38,7 @@ export function setup() {
     });
 
     controller.setupWebserver(env.PORT || 8080, function (err, webserver) {
+        console.log('webserver' + webserver);
         controller.createWebhookEndpoints(controller.webserver);
 
         controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
