@@ -47,7 +47,7 @@ schedule.scheduleJob({
 
 // 分報機能
 import * as timeline from './src/Timeline'
-import * as env from "./secret/env";
+// import * as env from "./secret/env";
 controller.hears(['(.*)'], 'ambient', function (bot, message) {
     timeline.chat(bot, message);
 });
