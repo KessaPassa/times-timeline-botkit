@@ -4,8 +4,7 @@
   "description": "",
   "main": "main.mjs",
   "scripts": {
-    "start": "node --experimental-modules main.mjs",
-    "server": "node --experimental-modules ReceiveServer.mjs"
+    "start": "node --experimental-modules main.mjs"
   },
   "author": "",
   "license": "ISC",

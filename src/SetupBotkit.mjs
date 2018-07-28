@@ -8,7 +8,7 @@ import botkit from 'botkit';
 export function setup() {
 
     if (!env.CLIENT_ID || !env.CLIENT_SECRET) {
-        console.log('Error: environment');
+        console.log('Error: env settings');
         process.exit(1);
     }
 
