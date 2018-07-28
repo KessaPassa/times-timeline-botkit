@@ -14,7 +14,7 @@ export function login(bot, message) {
         api.getUserInfo(id, function (user) {
             let name = user.display_name || user.real_name;
             database.login(id, name, function (result) {
-                if (result == null) {
+                if (!result) {
                     bot.reply(message, `<@${id}> ${Messages.allreadyLogin()}`);
                 }
                 else {
@@ -32,7 +32,7 @@ export function logout(bot, message) {
 
         let id = message.user;
         database.logout(id, function (result) {
-            if (result == null) {
+            if (!result) {
                 bot.reply(message, `<@${id}> ${Messages.alreadyLogout()}`);
             }
             else {

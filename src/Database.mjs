@@ -142,7 +142,7 @@ export function login(id, name, callback) {
             for (let i = 0; i < ids.length; i++) {
                 // 既にログインしているなら
                 if (ids[i] === id) {
-                    callback(null);
+                    callback(false);
                     return;
                 }
             }
@@ -154,7 +154,7 @@ export function login(id, name, callback) {
             text: 'login'
         });
 
-        callback('new');
+        callback(true);
     });
 }
 
@@ -170,13 +170,13 @@ export function logout(id, callback) {
                         name: null,
                         text: null
                     });
-                    callback('complete');
+                    callback(true);
                     return;
                 }
             }
         }
 
-        callback(null);
+        callback(false);
     });
 }
 
