@@ -1,5 +1,6 @@
 // import * as env from '../secret/env';
 let env = process.env;
+import request from 'request';
 
 // メッセージ削除
 export function deleteMessage(channel, ts, time = 30 * 1000) {
