@@ -1,4 +1,5 @@
 // import * as env from "./secret/env";
+// let env = process.env;
 import * as bot from './src/SetupBotkit';
 let controller = bot.setup();
 
@@ -56,6 +57,7 @@ controller.on(['file_shared'], function (bot, message) {
 });
 
 
+// APIサーバ機能
 import express from "express";
 import bodyParser from 'body-parser';
 // import fs from 'fs';
@@ -70,11 +72,6 @@ let server = app.listen(8010, function () {
     let port = server.address().port;
     console.log("App now running on port", port);
 });
-
-function handleError(res, reason, message, code) {
-    console.log("ERROR: " + reason);
-    res.status(code || 500).json({"error": message});
-}
 
 // app.use("/", (function () {
 // let router = express.Router();
