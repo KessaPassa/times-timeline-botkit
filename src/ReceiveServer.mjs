@@ -1,12 +1,8 @@
 // データベース
 import * as database from './Database';
 
-database.setup();
-
-
 // api受け取りサーバ
 import * as settings from './UsersSettings';
-
 settings.setup();
 
 
