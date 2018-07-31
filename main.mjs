@@ -1,7 +1,5 @@
-// // import * as env from "./secret/env";
-import * as settings from "./src/UsersSettings";
-
-let env = process.env;
+// import * as env from "./secret/env";
+// let env = process.env;
 // import * as bot from './src/SetupBotkit';
 // let controller = bot.setup();
 //
@@ -74,12 +72,12 @@ app.use("/", (function () {
     let router = express.Router();
 
     // 在室情報
-    router.post("/room/info", function (request, response) {
+    router.get('/room/info', function (request, response) {
         serverApi.getInfo(request, response);
     });
 
     // login, logout管理
-    router.post("/room/management", function (request, response) {
+    router.get("/room/management", function (request, response) {
         serverApi.sendInfo(request, response);
     });
 
