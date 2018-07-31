@@ -30,7 +30,7 @@ export function getInfo(request, response){
             out: goBackUsers
         };
         response.json(json);
-    })
+    });
 }
 
 export function sendInfo(request, response){
