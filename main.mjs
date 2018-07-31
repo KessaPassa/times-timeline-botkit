@@ -86,11 +86,6 @@ mongodb.MongoClient.connect(env.MONGODB_URI || "mongodb://localhost:27017/test",
     });
 });
 
-function handleError(res, reason, message, code) {
-    console.log("ERROR: " + reason);
-    res.status(code || 500).json({"error": message});
-}
-
 import * as serverApi from "./src/ReceiveServer";
 // 在室情報
 app.post("/room/info", function(request, response) {
@@ -102,6 +97,8 @@ app.post("/room/management", function(request, response) {
     serverApi.sendInfo(request, response);
 });
 
-// return router;
-// })());
-// app.listen(8010);
+app.post("/room", function(request, response) {
+    response.json({
+        status: 'okokok'
+    });
+});
