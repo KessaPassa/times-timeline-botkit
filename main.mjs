@@ -1,5 +1,5 @@
 // import * as env from "./secret/env";
-// let env = process.env;
+let env = process.env;
 // import * as bot from './src/SetupBotkit';
 // let controller = bot.setup();
 //
@@ -65,7 +65,7 @@ import bodyParser from 'body-parser';
 import * as serverApi from "./src/ReceiveServer";
 
 const app = express();
-app.set('port', 8010);
+app.set('port', env.PORT || 8010);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
