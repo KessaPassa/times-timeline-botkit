@@ -65,7 +65,7 @@ import bodyParser from 'body-parser';
 import * as serverApi from "./src/ReceiveServer";
 
 const app = express();
-app.set('port', env.PORT || 8010);
+app.set('port', (process.env.PORT || 3000));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
