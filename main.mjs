@@ -97,7 +97,7 @@ app.post("/room/management", function(request, response) {
     serverApi.sendInfo(request, response);
 });
 
-app.post("/room", function(request, response) {
+app.get("/room", function(request, response) {
     response.json({
         status: 'okokok'
     });
