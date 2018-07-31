@@ -1,10 +1,13 @@
 // // import * as env from "./secret/env";
+import * as settings from "./src/UsersSettings";
+
 let env = process.env;
 // import * as bot from './src/SetupBotkit';
 // let controller = bot.setup();
 //
 // データベース
 import * as database from './src/Database';
+
 database.setup();
 //
 //
@@ -60,45 +63,69 @@ database.setup();
 // APIサーバ機能
 import express from "express";
 import bodyParser from 'body-parser';
-import mongodb from 'mongodb';
+// import mongodb from 'mongodb';
+import * as serverApi from "./src/ReceiveServer";
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-let db;
+app.use("/", (function () {
+    let router = express.Router();
 
-// Connect to the database before starting the application server.
-mongodb.MongoClient.connect(env.MONGODB_URI || "mongodb://localhost:27017/test", function (err, client) {
-    if (err) {
-        console.log(err);
-        process.exit(1);
-    }
-
-    // Save database object from the callback for reuse.
-    db = client.db();
-    console.log("Database connection ready");
-
-    // Initialize the app.
-    let server = app.listen(8010, function () {
-        let port = server.address().port;
-        console.log("App now running on port", port);
+    // 在室情報
+    router.post("/room/info", function (request, response) {
+        serverApi.getInfo(request, response);
     });
-});
 
-import * as serverApi from "./src/ReceiveServer";
-// 在室情報
-app.post("/room/info", function(request, response) {
-    serverApi.getInfo(request, response);
-});
-
-// login, logout管理
-app.post("/room/management", function(request, response) {
-    serverApi.sendInfo(request, response);
-});
-
-app.get("/room", function(request, response) {
-    response.json({
-        status: 'okokok'
+    // login, logout管理
+    router.post("/room/management", function (request, response) {
+        serverApi.sendInfo(request, response);
     });
-});
+
+    router.get('/room', function (request, response) {
+        response.json({
+            status: 'okokok'
+        });
+    });
+
+    return router;
+})());
+app.listen(8010);
+
+// let db;
+//
+// // Connect to the database before starting the application server.
+// mongodb.MongoClient.connect(env.MONGODB_URI || "mongodb://localhost:27017/test", function (err, client) {
+//     if (err) {
+//         console.log(err);
+//         process.exit(1);
+//     }
+//
+//     // Save database object from the callback for reuse.
+//     db = client.db();
+//     console.log("Database connection ready");
+//
+//     // Initialize the app.
+//     let server = app.listen(8010, function () {
+//         let port = server.address().port;
+//         console.log("App now running on port", port);
+//     });
+// });
+//
+// import * as serverApi from "./src/ReceiveServer";
+// // 在室情報
+// app.post("/room/info", function(request, response) {
+//     serverApi.getInfo(request, response);
+// });
+//
+// // login, logout管理
+// app.post("/room/management", function(request, response) {
+//     serverApi.sendInfo(request, response);
+// });
+//
+// app.get("/room", function(request, response) {
+//     response.json({
+//         status: 'okokok'
+//     });
+// });
