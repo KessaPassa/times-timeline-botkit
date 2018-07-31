@@ -1,5 +1,5 @@
-// import * as env from '../secret/env';
-let env = process.env;
+import * as env from '../secret/env';
+// let env = process.env;
 import * as database from './Database';
 import * as api from './SlackApi';
 import * as Messages from './Messages';
