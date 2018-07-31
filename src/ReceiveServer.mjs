@@ -3,10 +3,11 @@ import * as database from './Database';
 
 // api受け取りサーバ
 import * as settings from './UsersSettings';
+
 settings.setup();
 
 
-export function getInfo(request, response){
+export function getInfo(request, response) {
     database.getRoom(function (ids, names) {
         // 在室してる人
         let inRoomUsers = [];
@@ -33,7 +34,7 @@ export function getInfo(request, response){
     });
 }
 
-export function sendInfo(request, response){
+export function sendInfo(request, response) {
     let body = request.body;
     let name = body.name;
 
