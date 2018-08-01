@@ -1,5 +1,5 @@
 // import * as env from "./secret/env";
-let env = process.env;
+// let env = process.env;
 // import * as bot from './src/SetupBotkit';
 // let controller = bot.setup();
 //
@@ -65,38 +65,34 @@ import bodyParser from 'body-parser';
 import * as serverApi from "./src/ReceiveServer";
 
 const app = express();
-app.set('port', (process.env.PORT || 3000));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-// app.use("/", (function () {
-//     let router = express.Router();
+app.use("/", (function () {
+    let router = express.Router();
+    console.log('localhost ok');
 
-// 在室情報
-app.post('https://times-timeline-botkit-stg.herokuapp.com/room/info', (request, response) => {
-    serverApi.getInfo(request, response);
-});
-
-// login, logout管理
-app.post('https://times-timeline-botkit-stg.herokuapp.com/room/management', (request, response) => {
-    serverApi.sendInfo(request, response);
-});
-
-app.post('https://times-timeline-botkit-stg.herokuapp.com/room', (request, response) => {
-    response.json({
-        status: 'okokok'
+    // 在室情報
+    router.post('/room/info', function (request, response) {
+        serverApi.getInfo(request, response);
     });
-});
 
-app.post('/hoge', (request, response) => {
-    response.json({
-        status: 'hogehoge'
+    // login, logout管理
+    router.post('/room/management', function (request, response) {
+        serverApi.sendInfo(request, response);
     });
-});
 
-//     return router;
-// })());
-// app.listen(8010);
+    router.post('/room', function (request, response) {
+        response.json({
+            status: 'okokok'
+        });
+    });
+
+    return router;
+})());
+app.listen(process.env.PORT || 8010, function(){
+    console.log('server launched');
+});
 
 // let db;
 //
