@@ -65,32 +65,41 @@ import bodyParser from 'body-parser';
 import * as serverApi from "./src/ReceiveServer";
 
 const app = express();
+app.set('port', (process.env.PORT || 8010));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use("/", (function () {
-    let router = express.Router();
-    console.log('localhost ok');
+// app.use("/", (function () {
+//     let router = express.Router();
+//     console.log('localhost ok');
+//
+//     // 在室情報
+//     router.post('/room/info', function (request, response) {
+//         serverApi.getInfo(request, response);
+//     });
+//
+//     // login, logout管理
+//     router.post('/room/management', function (request, response) {
+//         serverApi.sendInfo(request, response);
+//     });
+//
+//     router.post('/room', function (request, response) {
+//         response.json({
+//             status: 'okokok'
+//         });
+//     });
+//
+//     return router;
+// })());
 
-    // 在室情報
-    router.post('/room/info', function (request, response) {
-        serverApi.getInfo(request, response);
+app.get('/hoge', function(request, response) {
+    response.send('This is Twitter-bot application.');
+    response.json({
+        status: 'だだだだだだだ'
     });
+});
 
-    // login, logout管理
-    router.post('/room/management', function (request, response) {
-        serverApi.sendInfo(request, response);
-    });
-
-    router.post('/room', function (request, response) {
-        response.json({
-            status: 'okokok'
-        });
-    });
-
-    return router;
-})());
-app.listen(process.env.PORT || 8010, function(){
+app.listen(app.get('port'), function(){
     console.log('server launched');
 });
 
