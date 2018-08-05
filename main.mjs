@@ -92,8 +92,27 @@ app.use(bodyParser.json());
 //     return router;
 // })());
 
+// 在室情報
+app.post('/room/info', function (request, response) {
+    serverApi.getInfo(request, response);
+});
+
+// login, logout管理
+app.post('/room/management', function (request, response) {
+    serverApi.sendInfo(request, response);
+});
+
 app.get('/hoge', function(request, response) {
+    response.json({
+        status: 'だだだだだだだ'
+    });
+});
+
+app.post('/hoge2', function(request, response) {
     response.send('This is Twitter-bot application.');
+});
+
+app.post('/hoge3', function(request, response) {
     response.json({
         status: 'だだだだだだだ'
     });
